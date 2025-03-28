@@ -27,7 +27,7 @@ function(configure_cppcheck TARGET)
                 COMMAND ${CPPCHECK_EXECUTABLE}
                 --enable=all
                 --language=c++
-                # --std=c++17
+                --std=c++17
                 --inconclusive
                 --suppress=missingIncludeSystem
                 --suppress=missingInclude

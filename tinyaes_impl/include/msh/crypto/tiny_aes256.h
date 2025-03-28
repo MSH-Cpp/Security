@@ -1,24 +1,7 @@
 #pragma once
 
-#include "tiny_aes_interface.hpp"
+#define AES_TEMPLATE AES256_IMPL
 
-namespace msh::crypto {
+#include "tiny_aes_template.h"
 
-class AES256_IMPL : public AESInterface {
-  public:
-    AES256_IMPL(const utils::ByteArray& key, const AESInterface::Mode mode);
-
-  private:
-    // CBC Mode
-    utils::ByteArray encryptCBC(const utils::ByteArray& data) override;
-    utils::ByteArray decryptCBC(const utils::ByteArray& data) override;
-
-    // ECB Mode
-    utils::ByteArray encryptECB(const utils::ByteArray& data) override;
-    utils::ByteArray decryptECB(const utils::ByteArray& data) override;
-
-    // CTR Mode
-    utils::ByteArray encryptCTR(const utils::ByteArray& data) override;
-};
-
-}  // namespace msh::crypto
+#undef AES_TEMPLATE
