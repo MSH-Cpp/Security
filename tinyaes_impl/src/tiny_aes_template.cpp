@@ -8,14 +8,15 @@
     using namespace msh::crypto;                                                                   \
     using namespace msh::utils;                                                                    \
                                                                                                    \
-    AES_TEMPLATE::AES_TEMPLATE(const ByteArray& key, const AESInterface::Mode mode)                \
-        : AESInterface(key, mode) {                                                                \
+    template <Mode mode>                                                                           \
+    AES_TEMPLATE<mode>::AES_TEMPLATE(const ByteArray& key) : AESInterface(key) {                   \
         if (m_key.size() != AES_KEYLEN) {                                                          \
             throw std::invalid_argument("Key size must be " TO_STRING(AES_KEYLEN) " bytes");       \
         }                                                                                          \
     }                                                                                              \
                                                                                                    \
-    ByteArray AES_TEMPLATE::encryptCBC(const ByteArray& data) {                                    \
+    template <Mode mode>                                                                           \
+    ByteArray AES_TEMPLATE<mode>::encryptCBC(const ByteArray& data) {                              \
         ByteArray iv(AES_BLOCKLEN);                                                                \
         std::generate(iv.begin(), iv.end(), std::rand); /* Generate random IV */                   \
                                                                                                    \
@@ -34,7 +35,8 @@
         return ciphertext;                                                                         \
     }                                                                                              \
                                                                                                    \
-    ByteArray AES_TEMPLATE::decryptCBC(const ByteArray& data) {                                    \
+    template <Mode mode>                                                                           \
+    ByteArray AES_TEMPLATE<mode>::decryptCBC(const ByteArray& data) {                              \
         if (data.size() < AES_BLOCKLEN)                                                            \
             throw std::runtime_error("Ciphertext too short!");                                     \
                                                                                                    \
@@ -54,7 +56,8 @@
         return ciphertext;                                                                         \
     }                                                                                              \
                                                                                                    \
-    ByteArray AES_TEMPLATE::encryptECB(const ByteArray& data) {                                    \
+    template <Mode mode>                                                                           \
+    ByteArray AES_TEMPLATE<mode>::encryptECB(const ByteArray& data) {                              \
         ByteArray plaintext = data;                                                                \
         size_t paddedLength =                                                                      \
             plaintext.size() + (AES_BLOCKLEN - (plaintext.size() % AES_BLOCKLEN));                 \
@@ -70,7 +73,8 @@
         return plaintext;                                                                          \
     }                                                                                              \
                                                                                                    \
-    ByteArray AES_TEMPLATE::decryptECB(const ByteArray& data) {                                    \
+    template <Mode mode>                                                                           \
+    ByteArray AES_TEMPLATE<mode>::decryptECB(const ByteArray& data) {                              \
         ByteArray ciphertext = data;                                                               \
                                                                                                    \
         struct AES_ctx ctx;                                                                        \
@@ -84,7 +88,8 @@
         return ciphertext;                                                                         \
     }                                                                                              \
                                                                                                    \
-    ByteArray AES_TEMPLATE::encryptCTR(const ByteArray& data) {                                    \
+    template <Mode mode>                                                                           \
+    ByteArray AES_TEMPLATE<mode>::encryptCTR(const ByteArray& data) {                              \
         ByteArray iv(AES_BLOCKLEN);                                                                \
         std::generate(iv.begin(), iv.end(), std::rand); /* Generate random IV (Nonce + Counter) */ \
                                                                                                    \
@@ -102,6 +107,7 @@
         return output;                                                                             \
     }                                                                                              \
                                                                                                    \
-    ByteArray AES_TEMPLATE::decryptCTR(const utils::ByteArray& data) {                             \
+    template <Mode mode>                                                                           \
+    ByteArray AES_TEMPLATE<mode>::decryptCTR(const utils::ByteArray& data) {                       \
         return encryptCTR(data);                                                                   \
-    }
+    };

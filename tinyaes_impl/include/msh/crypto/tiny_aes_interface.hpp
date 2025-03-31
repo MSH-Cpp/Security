@@ -4,15 +4,12 @@
 
 namespace msh::crypto {
 
+enum class Mode { AES_CBC, AES_ECB, AES_CTR };
+enum class KeyLength { AES_128, AES_192, AES_256 };
+
 class AESInterface : public CryptoInterface {
   public:
-    enum class Mode { CBC, ECB, CTR };
-
-    explicit AESInterface(const utils::ByteArray& key, const Mode mode = Mode::CBC)
-        : CryptoInterface(key), m_mode(mode) {}
-
-  protected:
-    Mode m_mode;
+    explicit AESInterface(const utils::ByteArray& key) : CryptoInterface(key) {}
 };
 
 };  // namespace msh::crypto
