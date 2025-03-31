@@ -10,9 +10,9 @@ using namespace msh::utils;
 AES::AES(const ByteArray& key, const AESInterface::Mode mode, const KeyLength keyLength)
     : AESInterface(key, mode) {
     switch (keyLength) {
-        case KeyLength::AES_128: m_aes = std::make_unique<AES128_IMPL>(key, mode); break;
-        case KeyLength::AES_192: m_aes = std::make_unique<AES192_IMPL>(key, mode); break;
-        case KeyLength::AES_256: m_aes = std::make_unique<AES256_IMPL>(key, mode); break;
+        case KeyLength::AES_128: m_aes = std::make_unique<AES_128>(key, mode); break;
+        case KeyLength::AES_192: m_aes = std::make_unique<AES_192>(key, mode); break;
+        case KeyLength::AES_256: m_aes = std::make_unique<AES_256>(key, mode); break;
         default: throw std::invalid_argument("Invalid key length");
     }
 }

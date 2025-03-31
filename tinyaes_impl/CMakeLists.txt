@@ -25,7 +25,7 @@ target_link_libraries(${MSH_CRYPTO_AES_TARGET}
     msh::crypto_interface
 )
 target_link_libraries(${MSH_CRYPTO_AES_TARGET}
-    PRIVATE
+    PUBLIC
     $<IF:$<CONFIG:Debug>,${TINY_AES_C_LIBRARY_DEBUG},${TINY_AES_C_LIBRARY}>
 )
 

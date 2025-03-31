@@ -1,6 +1,7 @@
 #include "tiny_aes256.h"
 
 #define AES256 1
-#define AES_TEMPLATE AES256_IMPL
+#include <aes.hpp>
 
 #include "tiny_aes_template.cpp"
+TINY_AES_SOURCE_GENERATOR(AES_256)

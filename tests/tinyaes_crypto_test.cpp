@@ -2,13 +2,17 @@
 
 #include "msh/crypto/tiny_aes.h"
 
+using namespace msh::crypto;
+using namespace msh::utils;
+
 TEST_CASE("AES Encryption/Decryption", "[aes]") {
-    const std::string key = "0123456789abcdef";  // 16-byte key
-    const std::string iv = "0123456789abcdef";   // 16-byte IV
+    const std::string key_128 = "0123456789abcdef";                  // 16-byte key
+    const std::string key_192 = "0123456789abcdef01234567";          // 24-byte key
+    const std::string key_256 = "0123456789abcdef0123456789abcdef";  // 32-byte key
     const std::string plaintext = "Hello, World!";
 
     SECTION("Using AES class directly") {
-        msh::crypto::AES aes(msh::utils::ByteArray(key), msh::crypto::AES::Mode::ECB);
+        AES aes(msh::utils::ByteArray(key_128), AES::Mode::ECB, AES::KeyLength::AES_128);
 
         std::string encrypted = aes.encrypt(msh::utils::ByteArray(plaintext)).string();
         std::string decrypted = aes.decrypt(msh::utils::ByteArray(encrypted)).string();
@@ -20,18 +24,18 @@ TEST_CASE("AES Encryption/Decryption", "[aes]") {
     SECTION("Using static convenience methods") {
         std::string encrypted =
             msh::crypto::AES::encrypt<msh::crypto::AES::Mode::ECB,
-                                      msh::crypto::AES::KeyLength::AES_128>(plaintext, key, iv);
+                                      msh::crypto::AES::KeyLength::AES_128>(plaintext, key_128);
         std::string decrypted =
             msh::crypto::AES::decrypt<msh::crypto::AES::Mode::ECB,
-                                      msh::crypto::AES::KeyLength::AES_128>(encrypted, key, iv);
+                                      msh::crypto::AES::KeyLength::AES_128>(encrypted, key_128);
 
         REQUIRE(decrypted == plaintext);
         REQUIRE(encrypted != plaintext);
     }
 
     SECTION("Empty string") {
-        msh::crypto::AES aes(msh::utils::ByteArray(key), msh::crypto::AES::Mode::ECB);
         std::string empty = "";
+        AES aes(msh::utils::ByteArray(key_128), AES::Mode::ECB, AES::KeyLength::AES_128);
 
         std::string encrypted = aes.encrypt(msh::utils::ByteArray(empty)).string();
         std::string decrypted = aes.decrypt(msh::utils::ByteArray(encrypted)).string();
@@ -41,14 +45,14 @@ TEST_CASE("AES Encryption/Decryption", "[aes]") {
 
     SECTION("Invalid key length") {
         std::string invalid_key = "short";  // Too short
-        REQUIRE_THROWS_AS(
-            msh::crypto::AES(msh::utils::ByteArray(invalid_key), msh::crypto::AES::Mode::ECB),
-            std::invalid_argument);
+        REQUIRE_THROWS_AS(msh::crypto::AES(msh::utils::ByteArray(invalid_key),
+                                           msh::crypto::AES::Mode::ECB,
+                                           AES::KeyLength::AES_128),
+                          std::invalid_argument);
     }
 
     SECTION("Different key lengths") {
         // Test AES-128
-        std::string key_128 = "0123456789abcdef";  // 16 bytes
         auto aes_128 = msh::crypto::AES(msh::utils::ByteArray(key_128),
                                         msh::crypto::AES::Mode::ECB,
                                         msh::crypto::AES::KeyLength::AES_128);
@@ -57,7 +61,6 @@ TEST_CASE("AES Encryption/Decryption", "[aes]") {
         REQUIRE(decrypted_128.string() == plaintext);
 
         // Test AES-192
-        std::string key_192 = "0123456789abcdef01234567";  // 24 bytes
         auto aes_192 = msh::crypto::AES(msh::utils::ByteArray(key_192),
                                         msh::crypto::AES::Mode::ECB,
                                         msh::crypto::AES::KeyLength::AES_192);
@@ -66,7 +69,6 @@ TEST_CASE("AES Encryption/Decryption", "[aes]") {
         REQUIRE(decrypted_192.string() == plaintext);
 
         // Test AES-256
-        std::string key_256 = "0123456789abcdef0123456789abcdef";  // 32 bytes
         auto aes_256 = msh::crypto::AES(msh::utils::ByteArray(key_256),
                                         msh::crypto::AES::Mode::ECB,
                                         msh::crypto::AES::KeyLength::AES_256);

@@ -20,10 +20,10 @@ class AES : public AESInterface {
     // Static convenience methods
     template <Mode mode, KeyLength keyLength>
     static std::string encrypt(const std::string& input, const std::string& key,
-                               const std::string& iv);
+                               const std::string& iv = "");
     template <Mode mode, KeyLength keyLength>
     static std::string decrypt(const std::string& input, const std::string& key,
-                               const std::string& iv);
+                               const std::string& iv = "");
 
   private:
     std::unique_ptr<AESInterface> m_aes;
@@ -46,17 +46,13 @@ inline utils::ByteArray AES::decrypt(const utils::ByteArray& data) {
 template <AES::Mode mode, AES::KeyLength keyLength>
 inline std::string AES::encrypt(const std::string& input, const std::string& key,
                                 const std::string& iv) {
-    return AES(utils::ByteArray(key), mode, keyLength)
-        .encrypt(utils::ByteArray(input))
-        .string();
+    return AES(utils::ByteArray(key), mode, keyLength).encrypt(utils::ByteArray(input)).string();
 }
 
 template <AES::Mode mode, AES::KeyLength keyLength>
 inline std::string AES::decrypt(const std::string& input, const std::string& key,
                                 const std::string& iv) {
-    return AES(utils::ByteArray(key), mode, keyLength)
-        .decrypt(utils::ByteArray(input))
-        .string();
+    return AES(utils::ByteArray(key), mode, keyLength).decrypt(utils::ByteArray(input)).string();
 }
 
 }  // namespace msh::crypto
